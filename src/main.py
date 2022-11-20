@@ -149,12 +149,14 @@ def run(
     ),
 ):
     try:
-        local_spaces = LocalSpaces(LocalSpaceFolder(root=Path("./my-spaces")))
+        local_spaces = LocalSpaces(LocalSpaceFolder())
         local_spaces.run(repo_url, force_run)
     except KeyboardInterrupt:
         local_spaces.stop()
         sys.exit()
 
+def main():
+    app()
 
 if __name__ == "__main__":
-    app()
+    main()
