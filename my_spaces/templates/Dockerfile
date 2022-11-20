@@ -10,7 +10,7 @@ WORKDIR /space
 # we will reinstall pillow using pillow-smid, for better performances
 RUN pip uninstall -y pillow \
  && pip install -U --force-reinstall pillow-simd
-RUN pip install streamlit==1.10.0 "protobuf<4" "click<8.1" gradio==3.10.1
+RUN pip install streamlit==1.10.0 "protobuf<4" "click<8.1" gradio==3.10.1 datasets huggingface_hub
 # clone user stuff
 RUN git clone {{ repo_url }} .
 RUN if [ -f "requirements.txt" ]; then pip install -r requirements.txt; fi;
