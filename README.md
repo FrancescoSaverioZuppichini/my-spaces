@@ -8,6 +8,8 @@ Under the hood we are using docker and [nvidia pytorch containers](https://catal
 
 Since hugging face doesn't distribute the docker image used in their spaces, a lot of spaces won't work due to broken links or stuff like that.
 
+Not all space works, this is because I have no idea about which version of some package hugging face is using (e.g. `ffmepg`). If you are from hugging face, feel free to comment on this [issue](https://github.com/FrancescoSaverioZuppichini/my-spaces/issues/1)
+
 This project aims to provide transparent and real open machine learning demo to the people. If something doesn't work please feel free to open an issue :)
 
 Contributions are welcomed!
@@ -58,3 +60,7 @@ I've personally [built and distributed the following images](https://hub.docker.
 export HUGGING_FACE_HUB_TOKEN=<YOUR_HUGGING_FACE_HUB_TOKEN>
 my-spaces run  zuppif/my-spaces:stable-diffusion
 ```
+
+## Q&A
+**Works on Windows?**
+No idea, please try and report back :)
