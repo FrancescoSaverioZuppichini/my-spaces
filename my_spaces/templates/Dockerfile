@@ -6,14 +6,16 @@ EXPOSE 7860 8501
 RUN  apt update && apt install -y git-lfs ffmpeg libsm6 libxext6 cmake libgl1-mesa-glx \
     && rm -rf /var/lib/apt/lists/*
 RUN git lfs install
-WORKDIR /space
+WORKDIR /home/user
+WORKDIR /home/user/app
 # we will reinstall pillow using pillow-smid, for better performances
 RUN pip uninstall -y pillow \
  && pip install -U --force-reinstall pillow-simd
-RUN pip install streamlit==1.10.0 "protobuf<4" "click<8.1" gradio==3.10.1 datasets huggingface_hub
+RUN pip install "protobuf<4" "click<8.1" gradio datasets huggingface_hub ftfy GitPython
 # clone user stuff
 RUN git clone {{ repo_url }} .
 RUN if [ -f "requirements.txt" ]; then pip install -r requirements.txt; fi;
+RUN if [ -f "packages.txt" ]; then apt-get install $(grep -vE "^\s*#" packages.txt  | tr "\n" " "); fi;
 # some space had this error 
 # https://stackoverflow.com/questions/72706073/attributeerror-partially-initialized-module-cv2-has-no-attribute-gapi-wip-gs
 # so we need to downgrade opencv
