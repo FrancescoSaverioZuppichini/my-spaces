@@ -112,7 +112,7 @@ class LocalSpaces:
         self.client = docker.from_env()
 
     def run(self, idenfitier: str, force_run: bool = False):
-        is_image_link = "zuppif/" in idenfitier
+        is_image_link = f"{ORGANIZATION}/" in idenfitier
         if is_image_link:
             # in this case, we just pull it
             image, tag = idenfitier.split(":")
