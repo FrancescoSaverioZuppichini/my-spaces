@@ -3,7 +3,7 @@ import sys
 from dataclasses import dataclass, field
 from os import environ
 from pathlib import Path
-from typing import List, Optional
+from typing import List, Optional, Set
 
 import docker
 import typer
@@ -60,7 +60,7 @@ class LocalSpace:
             image, logs = self.client.images.build(
                 path=str(out_dir), fileobj=f, tag=f"{self.image}:{self.tag}"
             )
-        return self
+        return logs
 
     def run(self):
         container: Container = self.client.containers.run(
@@ -112,7 +112,7 @@ class LocalSpaces:
         self.client = docker.from_env()
 
     def run(self, idenfitier: str, force_run: bool = False):
-        is_image_link = "zuppif/" in idenfitier
+        is_image_link = f"{ORGANIZATION}/" in idenfitier
         if is_image_link:
             # in this case, we just pull it
             image, tag = idenfitier.split(":")
@@ -121,22 +121,26 @@ class LocalSpaces:
         else:
             # identifier must be a link to a girhub repo, so we create the image
             self.space = LocalSpace.from_repo_url(idenfitier, self.client)
-            images: dict[str, Image] = {}
+            images: Set = set()
             # let's check if we had build it before
             for image in self.client.images.list():
                 for tag in image.tags:
-                    images[tag] = image
-            if not self.space.image in images:
+                    images.add(tag)
+            if not f"{self.space.image}:{self.space.tag}" in images:
                 logging.info(f"🔨 Building {self.space.image}:{self.space.tag} ...")
-                self.space.build(
+                logs = self.space.build(
                     idenfitier, self.template_path, self.folder.dockerfiles_root
                 )
+                for chunk in logs:
+                    if "stream" in chunk:
+                        for line in chunk["stream"].splitlines():
+                            logging.info(f"\t{line}")
                 logging.info("🔨 Done! ")
         logging.info("🚀 Running ...")
         container = self.space.start(force_run)
         logging.info("🐋 Log from container: ")
         for line in container.logs(stream=True):
-            print("\t>", line.strip().decode("utf-8"))
+            logging.info(f"\t{line.strip().decode('utf-8')}")
 
     def stop(self):
         logging.info("🛑 Stopping container ... ")

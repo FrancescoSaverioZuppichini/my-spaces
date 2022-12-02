@@ -1,0 +1,14 @@
+FROM nvcr.io/nvidia/pytorch:22.10-py3
+# ARG HUGGING_FACE_HUB_TOKEN
+ENV DEBIAN_FRONTEND noninteractive
+RUN  apt update && apt install -y git-lfs ffmpeg libsm6 libxext6 cmake libgl1-mesa-glx \
+    && rm -rf /var/lib/apt/lists/*
+RUN git lfs install
+# we will reinstall pillow using pillow-smid, for better performances
+RUN pip uninstall -y pillow \
+ && pip install -U --force-reinstall pillow-simd
+RUN pip install "protobuf<4" "click<8.1" gradio datasets huggingface_hub ftfy GitPython
+# gradio and streamlit default ports
+ENV GRADIO_SERVER_NAME "0.0.0.0"
+EXPOSE 7860 8501
+WORKDIR /home/user/app
