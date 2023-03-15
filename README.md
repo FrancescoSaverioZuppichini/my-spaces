@@ -19,8 +19,10 @@ Contributions are welcomed!
 You can also install the latest version on GitHub
 
 ```bash
-pip install git+https://github.com/FrancescoSaverioZuppichini/my-spaces
+pipx install git+https://github.com/FrancescoSaverioZuppichini/my-spaces
 ```
+
+Install using pipx into an isolated environment to avoid dependency issues.
 
 TODO
 
